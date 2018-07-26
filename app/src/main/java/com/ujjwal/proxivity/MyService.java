@@ -115,12 +115,6 @@ public class MyService extends Service {
 
                     } else {
                         Log.i(TAG, "Not an admin");
-                        int REQUEST_CODE_ENABLE_ADMIN = 0;
-                        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                                adminReceiver);
-                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ANY EXTRA DESCRIPTION");
-                        startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
                     }
                 }
             }

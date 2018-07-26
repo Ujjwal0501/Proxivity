@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Proxivity.iml" filepath="$PROJECT_DIR$/Proxivity.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file:///media/ujjwal/DataDisk/krow/Myprojects/GitHub/Proxivity/Proxivity.iml" filepath="/media/ujjwal/DataDisk/krow/Myprojects/GitHub/Proxivity/Proxivity.iml" />
+      <module fileurl="file:///media/ujjwal/DataDisk/krow/Myprojects/GitHub/Proxivity/app/app.iml" filepath="/media/ujjwal/DataDisk/krow/Myprojects/GitHub/Proxivity/app/app.iml" />
     </modules>
   </component>
 </project>
