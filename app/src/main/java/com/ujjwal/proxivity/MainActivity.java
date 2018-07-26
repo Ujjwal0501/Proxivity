@@ -72,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
                             adminReceiver);
                     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ANY EXTRA DESCRIPTION");
                     startActivityForResult(intent, REQUEST_CODE);
-                }
-
-                startService(serviceIntent);
+                } else startService(serviceIntent);
             }
         });
         stop.setOnClickListener(new View.OnClickListener() {
@@ -148,4 +146,10 @@ public class MainActivity extends AppCompatActivity {
                 SensorManager.SENSOR_DELAY_UI);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE && resultCode == RESULT_CANCELED) Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
+        else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) startService(serviceIntent);
+    }
 }
