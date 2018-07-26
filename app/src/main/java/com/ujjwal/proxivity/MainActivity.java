@@ -1,6 +1,5 @@
 package com.ujjwal.proxivity;
 
-import android.annotation.TargetApi;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,14 +9,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private Button run;
     private Button stop;
     private Intent serviceIntent;
+    private final int REQUEST_CODE = 1;
     Display display;
 
     @Override
@@ -62,6 +59,21 @@ public class MainActivity extends AppCompatActivity {
         run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
+                        .getSystemService(Context.DEVICE_POLICY_SERVICE);
+                ComponentName adminReceiver = new ComponentName(getApplicationContext(),
+                        ScreenOffAdminReceiver.class);
+                boolean admin = policyManager.isAdminActive(adminReceiver);
+
+                if (!admin) {
+                    Log.i(TAG, "Not an admin");
+                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                            adminReceiver);
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ANY EXTRA DESCRIPTION");
+                    startActivityForResult(intent, REQUEST_CODE);
+                }
+
                 startService(serviceIntent);
             }
         });
@@ -97,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-
         accelerometerSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -106,28 +117,6 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < event.values.length; i++)
                     string += event.values[i]+"\n";
                 textView1.append(string);
-                if (event.values[1] < 0) {
-//                    DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
-//                            .getSystemService(Context.DEVICE_POLICY_SERVICE);
-//                    ComponentName adminReceiver = new ComponentName(getApplicationContext(),
-//                            ScreenOffAdminReceiver.class);
-//                    boolean admin = policyManager.isAdminActive(adminReceiver);
-//                    if (admin) {
-//                        Log.i(TAG, "Going to sleep now.");
-//                        policyManager.lockNow();
-//                    } else {
-//                        Log.i(TAG, "Not an admin");
-//                        Toast.makeText(getApplicationContext(), "Not an admin",
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-                    //Get the window from the context
-//                    WindowManager wm = Context.getSystemService(Context.WINDOW_SERVICE);
-
-                    //Lock device
-//                    DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-                }
-
-//                sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
             }
 
             @Override
@@ -135,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
+
         sensorManager.registerListener(proximitySensorListener, proximitySensor,
                 SensorManager.SENSOR_DELAY_UI);
         sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
@@ -157,4 +147,5 @@ public class MainActivity extends AppCompatActivity {
         sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
                 SensorManager.SENSOR_DELAY_UI);
     }
+
 }
