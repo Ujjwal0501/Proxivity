@@ -98,8 +98,6 @@ public class MyService extends Service {
         accelerometerSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-//                if (Build.VERSION.SDK_INT > 19)
-//                    Log.d(TAG, "inService: "+ display.getState());
                 if (event.values[1] < -0.4) {
                     DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
                             .getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -112,6 +110,22 @@ public class MyService extends Service {
                                 SensorManager.SENSOR_DELAY_NORMAL);
                         sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
                         policyManager.lockNow();
+
+                    } else {
+                        Log.i(TAG, "Not an admin");
+                    }
+                }
+                else if (Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_OFF) {
+                    DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
+                            .getSystemService(Context.DEVICE_POLICY_SERVICE);
+                    ComponentName adminReceiver = new ComponentName(getApplicationContext(),
+                            ScreenOffAdminReceiver.class);
+                    boolean admin = policyManager.isAdminActive(adminReceiver);
+                    if (admin) {
+                        Log.i(TAG, "Going to sleep now.");
+                        sensorManager.registerListener(proximitySensorListener, proximitySensor,
+                                SensorManager.SENSOR_DELAY_NORMAL);
+                        sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
 
                     } else {
                         Log.i(TAG, "Not an admin");
