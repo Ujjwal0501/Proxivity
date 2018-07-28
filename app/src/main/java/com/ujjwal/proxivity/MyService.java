@@ -98,7 +98,7 @@ public class MyService extends Service {
         accelerometerSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                if (event.values[1] < -0.4) {
+                if (event.values[1] < -0.8) {
                     DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
                             .getSystemService(Context.DEVICE_POLICY_SERVICE);
                     ComponentName adminReceiver = new ComponentName(getApplicationContext(),
