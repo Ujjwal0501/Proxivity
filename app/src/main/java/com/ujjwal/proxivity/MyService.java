@@ -100,7 +100,7 @@ public class MyService extends Service {
             public void onSensorChanged(SensorEvent event) {
 //                if (Build.VERSION.SDK_INT > 19)
 //                    Log.d(TAG, "inService: "+ display.getState());
-                if (event.values[1] < 0) {
+                if (event.values[1] < 0.4) {
                     DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
                             .getSystemService(Context.DEVICE_POLICY_SERVICE);
                     ComponentName adminReceiver = new ComponentName(getApplicationContext(),
