@@ -125,7 +125,7 @@ public class MyService extends Service {
                         Log.i(TAG, "Not an admin");
                     }
                 }
-                else if (event.values[1] < -0.8 && pflag == 0 && Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_OFF) {
+                else if (event.values[1] < -2.8 && pflag == 0 && Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_OFF) {
                     wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "My Tag");
                     wl.acquire(1);
                     if (wl.isHeld()) wl.release();
