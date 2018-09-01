@@ -28,10 +28,10 @@ public class MyService extends Service {
     private Sensor accelerometerSensor;
     private SensorEventListener accelerometerSensorListener;
     private SensorEventListener proximitySensorListener;
-    private SensorEventListener proximityScreenOn;
     Display display;
     PowerManager pm;
     PowerManager.WakeLock wl;
+    int pflag = 0, aflag = 0;
 
     class MyServiceBinder extends Binder {
         public MyService getService() {
@@ -59,7 +59,7 @@ public class MyService extends Service {
         if (accelerometerSensor == null) {
             Toast.makeText(this, "Accelerometer unavailable.", Toast.LENGTH_SHORT).show();
             stopSelf();
-        }
+        }/*
         proximitySensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -94,42 +94,41 @@ public class MyService extends Service {
 
             }
         };
+*/
+        proximitySensorListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                if (sensorEvent.values[0] < proximitySensor.getMaximumRange())
+                    pflag = 1;
+                else pflag = 0;
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+        };
 
         accelerometerSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                if (event.values[1] < -0.8) {
+                if (event.values[1] < -0.8 && pflag == 1 && Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_ON) {
                     DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
                             .getSystemService(Context.DEVICE_POLICY_SERVICE);
                     ComponentName adminReceiver = new ComponentName(getApplicationContext(),
                             ScreenOffAdminReceiver.class);
                     boolean admin = policyManager.isAdminActive(adminReceiver);
                     if (admin) {
-                        Log.i(TAG, "Going to sleep now.");
-                        sensorManager.registerListener(proximitySensorListener, proximitySensor,
-                                SensorManager.SENSOR_DELAY_NORMAL);
-                        sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
                         policyManager.lockNow();
 
                     } else {
                         Log.i(TAG, "Not an admin");
                     }
                 }
-                else if (Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_OFF) {
-                    DevicePolicyManager policyManager = (DevicePolicyManager) getApplicationContext()
-                            .getSystemService(Context.DEVICE_POLICY_SERVICE);
-                    ComponentName adminReceiver = new ComponentName(getApplicationContext(),
-                            ScreenOffAdminReceiver.class);
-                    boolean admin = policyManager.isAdminActive(adminReceiver);
-                    if (admin) {
-                        Log.i(TAG, "Going to sleep now.");
-                        sensorManager.registerListener(proximitySensorListener, proximitySensor,
-                                SensorManager.SENSOR_DELAY_NORMAL);
-                        sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
-
-                    } else {
-                        Log.i(TAG, "Not an admin");
-                    }
+                else if (event.values[1] < -0.8 && pflag == 0 && Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_OFF) {
+                    wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "My Tag");
+                    wl.acquire(1);
+                    if (wl.isHeld()) wl.release();
                 }
             }
 
@@ -139,10 +138,8 @@ public class MyService extends Service {
             }
         };
 
-        if (Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_OFF) sensorManager.registerListener(proximitySensorListener, proximitySensor,
-                SensorManager.SENSOR_DELAY_NORMAL);
-        if (Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_ON) sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
-                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(proximitySensorListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
