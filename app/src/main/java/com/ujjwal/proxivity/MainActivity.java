@@ -54,6 +54,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Accelerometer sensor unavailable.", Toast.LENGTH_SHORT).show();
         }
 
+        if (startService(serviceIntent) != null) {
+            stopService(serviceIntent);
+            run.setEnabled(true);
+            stop.setEnabled(false);
+        } else {
+            run.setEnabled(false);
+            stop.setEnabled(true);
+        }
+
         run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,13 +79,19 @@ public class MainActivity extends AppCompatActivity {
                             adminReceiver);
                     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ANY EXTRA DESCRIPTION");
                     startActivityForResult(intent, REQUEST_CODE);
-                } else startService(serviceIntent);
+                } else {
+                    startService(serviceIntent);
+                    run.setEnabled(false);
+                    stop.setEnabled(true);
+                }
             }
         });
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stopService(serviceIntent);
+                run.setEnabled(true);
+                stop.setEnabled(false);
             }
         });
 
@@ -118,6 +133,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE && resultCode == RESULT_CANCELED) Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
-        else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) startService(serviceIntent);
+        else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            startService(serviceIntent);
+            run.setEnabled(false);
+            stop.setEnabled(true);
+        }
     }
 }
