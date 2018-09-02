@@ -1,2 +1,2 @@
 # Proxivity
-An android application that handles the events that trigger screen display to turn on/off.
+An android application that turns screen display on/off based on events triggered by user using proximity sensor and accelerometer.
