@@ -31,7 +31,7 @@ public class MyService extends Service {
     Display display;
     PowerManager pm;
     PowerManager.WakeLock wl;
-    int pflag = 0, aflag = 0;
+    int pflag = 0;
 
     class MyServiceBinder extends Binder {
         public MyService getService() {
@@ -161,12 +161,6 @@ public class MyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, " In onStartCommand");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                onCreate();
-            }
-        }).start();
         return START_STICKY;
     }
 }
