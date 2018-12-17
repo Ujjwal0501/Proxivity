@@ -9,6 +9,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,8 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private Sensor proximitySensor;
     private Sensor accelerometerSensor;
     private SensorEventListener accelerometerSensorListener;
-    private SensorEventListener proximitySensorListener;
-    private TextView textView;
     private TextView textView1;
     private Button run;
     private Button stop;
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        textView = (TextView) findViewById(R.id.result);
         textView1 = (TextView) findViewById(R.id.result1);
         run = (Button) findViewById(R.id.run);
         stop = (Button) findViewById(R.id.stop);
@@ -54,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
         }
         if (accelerometerSensor == null) {
             Toast.makeText(this, "Accelerometer sensor unavailable.", Toast.LENGTH_SHORT).show();
+        }
+
+        if (stopService(serviceIntent)) {
+            startService(serviceIntent);
+            run.setEnabled(false);
+            stop.setEnabled(true);
+        } else {
+            run.setEnabled(true);
+            stop.setEnabled(false);
         }
 
         run.setOnClickListener(new View.OnClickListener() {
@@ -72,41 +79,22 @@ public class MainActivity extends AppCompatActivity {
                             adminReceiver);
                     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ANY EXTRA DESCRIPTION");
                     startActivityForResult(intent, REQUEST_CODE);
-                } else startService(serviceIntent);
+                } else {
+                    startService(serviceIntent);
+                    run.setEnabled(false);
+                    stop.setEnabled(true);
+                }
             }
         });
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stopService(serviceIntent);
+                run.setEnabled(true);
+                stop.setEnabled(false);
             }
         });
-        proximitySensorListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                textView.setText(event.sensor.getName());
-                if (event.values[0] < proximitySensor.getMaximumRange()) {
-                    String string = "\n"+event.accuracy+"\n";
-                    for (int i = 0; i < event.values.length; i++)
-                        string += event.values[i];
-                    textView.append(string);
-                    getWindow().getDecorView().setBackgroundColor(Color.GREEN);
-                } else {
-                    String string = "\n"+event.accuracy+"\n";
-                    for (int i = 0; i < event.values.length; i++)
-                        string += event.values[i];
-                    textView.append(string);
-                    getWindow().getDecorView().setBackgroundColor(Color.RED);
-                }
 
-//                sensorManager.unregisterListener(proximitySensorListener, proximitySensor);
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-            }
-        };
         accelerometerSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -123,8 +111,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        sensorManager.registerListener(proximitySensorListener, proximitySensor,
-                SensorManager.SENSOR_DELAY_UI);
         sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
                 SensorManager.SENSOR_DELAY_UI);
 
@@ -133,15 +119,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(proximitySensorListener, proximitySensor);
         sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(proximitySensorListener, proximitySensor,
-                SensorManager.SENSOR_DELAY_UI);
         sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
                 SensorManager.SENSOR_DELAY_UI);
     }
@@ -150,6 +133,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE && resultCode == RESULT_CANCELED) Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
-        else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) startService(serviceIntent);
+        else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            startService(serviceIntent);
+            run.setEnabled(false);
+            stop.setEnabled(true);
+        }
     }
 }

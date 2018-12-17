@@ -3,4 +3,5 @@
     <string name="device_admin_not_enabled">Admin Not Enabled</string>
     <string name="run">Start Service</string>
     <string name="stop">Stop Service</string>
+    <string name="reboot">Reboot Device</string>
 </resources>
