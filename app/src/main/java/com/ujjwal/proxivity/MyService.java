@@ -155,7 +155,7 @@ public class MyService extends Service {
         sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
         Log.d(TAG, " In onDestroy");
         super.onDestroy();
-        Toast.makeText(this, "Service stopped.", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Service stopped.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
