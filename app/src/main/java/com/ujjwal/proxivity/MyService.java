@@ -18,8 +18,6 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
-
 public class MyService extends Service {
 
     private final String TAG = "Testing";

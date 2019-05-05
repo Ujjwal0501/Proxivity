@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
                 SensorManager.SENSOR_DELAY_UI);
 
+        run.performClick();
     }
 
     @Override
