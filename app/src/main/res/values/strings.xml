@@ -4,4 +4,6 @@
     <string name="run">Start Service</string>
     <string name="stop">Stop Service</string>
     <string name="reboot">Reboot Device</string>
+    <string name="channel_name">Channel Name</string>
+    <string name="channel_description">This is description of the channel.</string>
 </resources>

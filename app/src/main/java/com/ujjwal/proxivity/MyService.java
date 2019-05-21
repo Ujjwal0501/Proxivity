@@ -1,5 +1,6 @@
 package com.ujjwal.proxivity;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -13,10 +14,14 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.ujjwal.proxivity.NotificationHelper;
 
 public class MyService extends Service {
 
@@ -26,6 +31,8 @@ public class MyService extends Service {
     private Sensor accelerometerSensor;
     private SensorEventListener accelerometerSensorListener;
     private SensorEventListener proximitySensorListener;
+    NotificationManagerCompat notificationManagerCompat;
+    NotificationCompat.Builder builder;
     Display display;
     PowerManager pm;
     PowerManager.WakeLock wl;
@@ -49,6 +56,11 @@ public class MyService extends Service {
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+
+        NotificationHelper.createNotificationChannel(this);
+        builder = NotificationHelper.build(this);
+        notificationManagerCompat = NotificationManagerCompat.from(this);
+        notificationManagerCompat.notify(155555, builder.build());
 
         if (proximitySensor == null) {
             Toast.makeText(this, "Proximity sensor unavailable.", Toast.LENGTH_SHORT).show();
@@ -152,6 +164,7 @@ public class MyService extends Service {
         sensorManager.unregisterListener(proximitySensorListener, proximitySensor);
         sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
         Log.d(TAG, " In onDestroy");
+        notificationManagerCompat.cancel(155555);
         super.onDestroy();
 //        Toast.makeText(this, "Service stopped.", Toast.LENGTH_SHORT).show();
     }
