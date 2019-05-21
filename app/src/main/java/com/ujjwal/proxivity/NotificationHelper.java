@@ -1,23 +1,28 @@
 package com.ujjwal.proxivity;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 public class NotificationHelper {
     static String CHANNEL_ID = "ProxivityNotificationChannel";
 
     public static NotificationCompat.Builder build(Context context) {
+        RemoteViews notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("My notification")
-                .setContentText("Much longer text that cannot fit one line...")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Much longer text that cannot fit one line... Much longer text that cannot fit one line... Much longer text that cannot fit one line..."))
+                .setContentTitle("Proxivity")
+                .setContentText("Control the background service.")
                 .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationLayout)
                 .setOngoing(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
         return builder;
     }
 
