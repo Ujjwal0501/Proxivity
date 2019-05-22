@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ANY EXTRA DESCRIPTION");
                     startActivityForResult(intent, REQUEST_CODE);
                 } else {
-                    startService(serviceIntent);
+                    run();
+
                     run.setEnabled(false);
                     stop.setEnabled(true);
                 }
@@ -129,9 +130,20 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE && resultCode == RESULT_CANCELED) Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
         else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            startService(serviceIntent);
+            run();
             run.setEnabled(false);
             stop.setEnabled(true);
         }
+    }
+
+    private void run() {
+//        if (is)
+        System.out.println(Thread.currentThread().getId());
+        new Thread() {
+            @Override
+            public void run() {
+                startService(serviceIntent);
+            }
+        }.start();
     }
 }

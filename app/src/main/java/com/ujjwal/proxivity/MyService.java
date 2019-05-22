@@ -53,6 +53,7 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        appendLog("\nonCreate is on ThreadID: " + Thread.currentThread().getId()+"");
 
         Log.d(TAG, "In-onCreate on threadID "+Thread.currentThread().getId());
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -64,7 +65,7 @@ public class MyService extends Service {
         NotificationHelper.createNotificationChannel(this);
         builder = NotificationHelper.build(this);
         notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify(155555, builder.build());
+//        notificationManagerCompat.notify(155555, builder.build());
 
         if (proximitySensor == null) {
             Toast.makeText(this, "Proximity sensor unavailable.", Toast.LENGTH_SHORT).show();
@@ -168,9 +169,9 @@ public class MyService extends Service {
         sensorManager.unregisterListener(proximitySensorListener, proximitySensor);
         sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
         Log.d(TAG, " In onDestroy");
-        notificationManagerCompat.cancel(155555);
+//        notificationManagerCompat.cancel(155555);
         state = false;
-        this.appendLog("Service Stopped:");
+        this.appendLog("Service Stopped:\n");
         super.onDestroy();
 //        Toast.makeText(this, "Service stopped.", Toast.LENGTH_SHORT).show();
     }
@@ -179,13 +180,24 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, " In onStartCommand");
         state = true;
-        this.appendLog("\nSerivce Started:");
+        this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
+        startForeground(1155555, builder.build());
         return START_STICKY;
     }
 
     public void appendLog(String... text)
     {
-        File logFile = new File("sdcard/proxivity_log.txt");
+        File logFile = new File(getExternalFilesDir(null),"proxivity_log.txt");
+//        System.out.println(getFilesDir());                      // /data/data/com.ujjwal.proxivity/files
+//        System.out.println(getExternalFilesDir(null));     // /storage/emulated/0/Android/data/com.ujjwal.proxivity/files
+//        System.out.println(getCacheDir());                      // /data/data/com.ujjwal.proxivity/cache
+//        System.out.println(getExternalCacheDir());              // /storage/emulated/0/Android/data/com.ujjwal.proxivity/cache
+//        System.out.println(Environment.getDataDirectory());         // /data
+//        System.out.println(Environment.getDownloadCacheDirectory());    // /cache
+//        System.out.println(Environment.getExternalStorageDirectory());  // /storage/emulated/0
+//        System.out.println(Environment.getRootDirectory());             // /system
+//        System.out.println(Environment.getExternalStoragePublicDirectory(null));
+
         if (!logFile.exists())
         {
             try
@@ -203,7 +215,7 @@ public class MyService extends Service {
             //BufferedWriter for performance, true to set append to file flag
             BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
             buf.append(text[0] + " " + new Timestamp(System.currentTimeMillis()));
-//            buf.append(text[1] + " " + Date(System.currentTimeMillis()));
+//            buf.append("\n" + text[1] + " ");
             buf.newLine();
             buf.close();
         }
