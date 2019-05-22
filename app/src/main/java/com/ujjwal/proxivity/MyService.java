@@ -1,6 +1,5 @@
 package com.ujjwal.proxivity;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -21,7 +20,11 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.ujjwal.proxivity.NotificationHelper;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Timestamp;
 
 public class MyService extends Service {
 
@@ -31,6 +34,7 @@ public class MyService extends Service {
     private Sensor accelerometerSensor;
     private SensorEventListener accelerometerSensorListener;
     private SensorEventListener proximitySensorListener;
+    private static boolean state = false;
     NotificationManagerCompat notificationManagerCompat;
     NotificationCompat.Builder builder;
     Display display;
@@ -165,6 +169,8 @@ public class MyService extends Service {
         sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
         Log.d(TAG, " In onDestroy");
         notificationManagerCompat.cancel(155555);
+        state = false;
+        this.appendLog("Service Stopped:");
         super.onDestroy();
 //        Toast.makeText(this, "Service stopped.", Toast.LENGTH_SHORT).show();
     }
@@ -172,6 +178,39 @@ public class MyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, " In onStartCommand");
+        state = true;
+        this.appendLog("\nSerivce Started:");
         return START_STICKY;
+    }
+
+    public void appendLog(String... text)
+    {
+        File logFile = new File("sdcard/proxivity_log.txt");
+        if (!logFile.exists())
+        {
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            //BufferedWriter for performance, true to set append to file flag
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(text[0] + " " + new Timestamp(System.currentTimeMillis()));
+//            buf.append(text[1] + " " + Date(System.currentTimeMillis()));
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

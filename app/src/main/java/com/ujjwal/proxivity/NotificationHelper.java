@@ -23,6 +23,7 @@ public class NotificationHelper {
                 .setCustomContentView(notificationLayout)
                 .setOngoing(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
         return builder;
     }
 
