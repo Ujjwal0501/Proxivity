@@ -53,6 +53,8 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+//        new Thread() { }.start();
         appendLog("\nonCreate is on ThreadID: " + Thread.currentThread().getId()+"");
 
         Log.d(TAG, "In-onCreate on threadID "+Thread.currentThread().getId());
@@ -183,6 +185,7 @@ public class MyService extends Service {
         this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
         startForeground(1155555, builder.build());
         return START_STICKY;
+//        return S
     }
 
     public void appendLog(String... text)

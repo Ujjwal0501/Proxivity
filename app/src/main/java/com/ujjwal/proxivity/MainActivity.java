@@ -1,15 +1,15 @@
 package com.ujjwal.proxivity;
 
+import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 stopService(serviceIntent);
                 run.setEnabled(true);
                 stop.setEnabled(false);
+                Snackbar.make(textView1, "Service is stopped.", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -94,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 textView1.setText(event.sensor.getName());
-                String string = "\n"+event.accuracy+"\n";
+                String string = "\n" + event.accuracy + "\n";
                 for (int i = 0; i < event.values.length; i++)
-                    string += event.values[i]+"\n";
+                    string += event.values[i] + "\n";
                 textView1.append(string);
             }
 
@@ -128,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE && resultCode == RESULT_CANCELED) Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_CANCELED)
+            Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
         else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             run();
             run.setEnabled(false);
@@ -139,11 +141,26 @@ public class MainActivity extends AppCompatActivity {
     private void run() {
 //        if (is)
         System.out.println(Thread.currentThread().getId());
-        new Thread() {
-            @Override
-            public void run() {
-                startService(serviceIntent);
+        if (!isMyServiceRunning(MyService.class)) {
+            new Thread() {
+                @Override
+                public void run() {
+                    startService(serviceIntent);
+                }
+            }.start();
+            Snackbar.make(textView1, "Service started successfully.", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(textView1, "Service already running.", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
             }
-        }.start();
+        }
+        return false;
     }
 }
