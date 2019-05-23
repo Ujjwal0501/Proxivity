@@ -54,8 +54,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Accelerometer sensor unavailable.", Toast.LENGTH_SHORT).show();
         }
 
-        run.setEnabled(false);
-        stop.setEnabled(true);
+        if (isMyServiceRunning(ScreenOnOffService.class)) {
+            run.setEnabled(false);
+            stop.setEnabled(true);
+        } else {
+            stop.setEnabled(false);
+            run.setEnabled(true);
+        }
 
         run.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
                 SensorManager.SENSOR_DELAY_UI);
 
-        run.performClick();
+//        run.performClick();
     }
 
     @Override
