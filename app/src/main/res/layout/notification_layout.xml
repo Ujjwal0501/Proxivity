@@ -52,6 +52,13 @@
             android:layout_marginLeft="-8dp"
             android:src="@drawable/inc30" />
 
+        <ImageButton
+            android:id="@+id/exit"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/close" />
+
 
     </LinearLayout>
 

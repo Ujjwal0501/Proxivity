@@ -62,6 +62,8 @@
         <receiver android:name=".IncrementReceiver"/>
 
         <receiver android:name=".DecrementReceiver"/>
+
+        <receiver android:name=".CloseServiceReceiver"/>
     </application>
 
 </manifest>

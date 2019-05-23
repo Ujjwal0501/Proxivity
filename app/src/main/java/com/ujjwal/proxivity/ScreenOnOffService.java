@@ -209,5 +209,7 @@ public class ScreenOnOffService extends Service {
                 PendingIntent.getBroadcast(context, 0, new Intent(context, IncrementReceiver.class), 0));
         NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.dec,
                 PendingIntent.getBroadcast(context, 0, new Intent(context, DecrementReceiver.class), 0));
+        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.exit,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, CloseServiceReceiver.class), 0));
     }
 }
