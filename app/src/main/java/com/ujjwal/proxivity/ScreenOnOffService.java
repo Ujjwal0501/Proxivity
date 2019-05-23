@@ -1,5 +1,6 @@
 package com.ujjwal.proxivity;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -26,16 +27,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-public class MyService extends Service {
+public class ScreenOnOffService extends Service {
 
     private final String TAG = "Testing";
-    private SensorManager sensorManager;
-    private Sensor proximitySensor;
-    private Sensor accelerometerSensor;
-    private SensorEventListener accelerometerSensorListener;
-    private SensorEventListener proximitySensorListener;
-    private static boolean state = false;
-    NotificationManagerCompat notificationManagerCompat;
+    public static SensorManager sensorManager;
+    public static Sensor proximitySensor;
+    public static Sensor accelerometerSensor;
+    public static SensorEventListener accelerometerSensorListener;
+    public static SensorEventListener proximitySensorListener;
+    public static boolean state = false;
+    public static int seconds = 30;
+    static NotificationManagerCompat notificationManagerCompat;
     NotificationCompat.Builder builder;
     Display display;
     PowerManager pm;
@@ -43,8 +45,8 @@ public class MyService extends Service {
     int pflag = 0;
 
     class MyServiceBinder extends Binder {
-        public MyService getService() {
-            return MyService.this;
+        public ScreenOnOffService getService() {
+            return ScreenOnOffService.this;
         }
     }
 
@@ -76,42 +78,8 @@ public class MyService extends Service {
         if (accelerometerSensor == null) {
             Toast.makeText(this, "Accelerometer unavailable.", Toast.LENGTH_SHORT).show();
             stopSelf();
-        }/*
-        proximitySensorListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                if (event.values[0] < proximitySensor.getMaximumRange()) {
-                    sensorManager.registerListener(proximityScreenOn, proximitySensor,
-                            SensorManager.SENSOR_DELAY_NORMAL);
-                    sensorManager.unregisterListener(proximitySensorListener, proximitySensor);
-                }
-            }
+        }
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-            }
-        };
-
-        proximityScreenOn = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                if (event.values[0] > 0) {
-                    wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "My Tag");
-                    wl.acquire();
-                    if (wl.isHeld()) wl.release();
-                    sensorManager.registerListener(accelerometerSensorListener, accelerometerSensor,
-                            SensorManager.SENSOR_DELAY_NORMAL);
-                    sensorManager.unregisterListener(proximityScreenOn, proximitySensor);
-                }
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-            }
-        };
-*/
         proximitySensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -183,13 +151,14 @@ public class MyService extends Service {
         Log.d(TAG, " In onStartCommand");
         state = true;
         this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
+
+        addAction(this);
         startForeground(1155555, builder.build());
         return START_STICKY;
 //        return S
     }
 
-    public void appendLog(String... text)
-    {
+    public void appendLog(String... text) {
         File logFile = new File(getExternalFilesDir(null),"proxivity_log.txt");
 //        System.out.println(getFilesDir());                      // /data/data/com.ujjwal.proxivity/files
 //        System.out.println(getExternalFilesDir(null));     // /storage/emulated/0/Android/data/com.ujjwal.proxivity/files
@@ -227,5 +196,18 @@ public class MyService extends Service {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public static void addAction(Context context) {
+
+        // add functionality to the notification buttons
+        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.start,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, StartNowReceiver.class), 0));
+        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.snooze,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, SnoozeReceiver.class), 0));
+        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.inc,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, IncrementReceiver.class), 0));
+        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.dec,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, DecrementReceiver.class), 0));
     }
 }

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         textView1 = (TextView) findViewById(R.id.result1);
         run = (Button) findViewById(R.id.run);
         stop = (Button) findViewById(R.id.stop);
-        serviceIntent = new Intent(getApplicationContext(), MyService.class);
+        serviceIntent = new Intent(getApplicationContext(), ScreenOnOffService.class);
         display = getWindowManager().getDefaultDisplay();
 
         if (proximitySensor == null) {
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     private void run() {
 //        if (is)
         System.out.println(Thread.currentThread().getId());
-        if (!isMyServiceRunning(MyService.class)) {
+        if (!isMyServiceRunning(ScreenOnOffService.class)) {
             new Thread() {
                 @Override
                 public void run() {

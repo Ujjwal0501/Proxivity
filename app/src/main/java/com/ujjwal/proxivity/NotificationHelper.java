@@ -10,21 +10,12 @@ import android.widget.RemoteViews;
 
 public class NotificationHelper {
     static String CHANNEL_ID = "ProxivityNotificationChannel";
+    static RemoteViews notificationLayout;
 
     public static NotificationCompat.Builder build(Context context) {
-        RemoteViews notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+        notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("Proxivity")
-                .setContentText("Control the background service.")
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(notificationLayout)
-                .setOngoing(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
-        if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
-        return builder;
+        return init(context);
     }
 
     public static void createNotificationChannel(Context context) {
@@ -42,5 +33,20 @@ public class NotificationHelper {
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    public static NotificationCompat.Builder init(Context context) {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentTitle("Proxivity")
+                .setContentText("Control the background service.")
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationLayout)
+                .setOngoing(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
+        return builder;
     }
 }

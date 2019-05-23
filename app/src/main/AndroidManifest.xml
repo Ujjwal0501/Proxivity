@@ -32,7 +32,7 @@
         </activity>
 
         <service
-            android:name=".MyService"
+            android:name=".ScreenOnOffService"
             android:enabled="true"
             android:exported="true"/>
 
@@ -54,6 +54,14 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        
+        <receiver android:name=".StartNowReceiver"/>
+
+        <receiver android:name=".SnoozeReceiver"/>
+
+        <receiver android:name=".IncrementReceiver"/>
+
+        <receiver android:name=".DecrementReceiver"/>
     </application>
 
 </manifest>
