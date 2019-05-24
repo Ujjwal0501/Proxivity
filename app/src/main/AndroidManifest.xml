@@ -31,6 +31,7 @@
             </intent-filter>
         </activity>
 
+        <!--register the background service -->
         <service
             android:name=".ScreenOnOffService"
             android:enabled="true"
@@ -47,22 +48,22 @@
             </intent-filter>
         </receiver>
 
+        <!--receiver for boot completion-->
         <receiver android:name="BootReceiver"
             android:exported="true"
             android:enabled="true">
             <intent-filter>
+
+                <!--filter broadcasts for only BOOT_COMPLETE broadcasts-->
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        
+
+        <!-- 5 receivers for the notification actions-->
         <receiver android:name=".StartNowReceiver"/>
-
         <receiver android:name=".SnoozeReceiver"/>
-
         <receiver android:name=".IncrementReceiver"/>
-
         <receiver android:name=".DecrementReceiver"/>
-
         <receiver android:name=".CloseServiceReceiver"/>
     </application>
 

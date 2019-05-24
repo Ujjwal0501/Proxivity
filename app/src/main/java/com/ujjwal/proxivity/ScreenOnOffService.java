@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Timer;
 
 public class ScreenOnOffService extends Service {
 
@@ -37,6 +38,7 @@ public class ScreenOnOffService extends Service {
     public static SensorEventListener proximitySensorListener;
     public static boolean state = false;
     public static int seconds = 30;
+    public static Timer timer = null;
     static NotificationManagerCompat notificationManagerCompat;
     NotificationCompat.Builder builder;
     Display display;
@@ -110,7 +112,7 @@ public class ScreenOnOffService extends Service {
                         Log.i(TAG, "Not an admin");
                     }
                 }
-                else if (event.values[1] < -2.8 && pflag == 0 && Build.VERSION.SDK_INT > 19 && display.getState() == Display.STATE_OFF) {
+                else if (event.values[1] < -2.8 && pflag == 0 && Build.VERSION.SDK_INT > 19 && display.getState() != Display.STATE_ON) {
                     wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "DEBUG: My Tag");
                     wl.acquire(1);
                     if (wl.isHeld()) wl.release();
