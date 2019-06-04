@@ -1,4 +1,4 @@
-package com.ujjwal.proxivity;
+package com.ujjwal.proxivity.receivers;
 
         import android.app.admin.DeviceAdminReceiver;
         import android.content.Context;

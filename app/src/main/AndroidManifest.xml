@@ -3,11 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ujjwal.proxivity">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.USES_POLICY_FORCE_LOCK"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.USES_POLICY_FORCE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature
         android:name="android.hardware.sensor.proximity"
         android:required="true" />
@@ -23,7 +25,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity android:name=".receivers.PermissionActivity"
+            android:label="@string/app_name"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,23 +43,30 @@
         <service
             android:name=".ScreenOnOffService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+        <service
+            android:name=".ScreenshotService"
+            android:enabled="true"
+            android:exported="true" />
 
         <receiver
-            android:name="ScreenOffAdminReceiver"
+            android:name=".receivers.ScreenOffAdminReceiver"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data android:name="android.app.device_admin"
+            <meta-data
+                android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
+
             <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
 
         <!--receiver for boot completion-->
-        <receiver android:name="BootReceiver"
-            android:exported="true"
-            android:enabled="true">
+        <receiver
+            android:name=".receivers.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
 
                 <!--filter broadcasts for only BOOT_COMPLETE broadcasts-->
@@ -60,11 +75,12 @@
         </receiver>
 
         <!-- 5 receivers for the notification actions-->
-        <receiver android:name=".StartNowReceiver"/>
-        <receiver android:name=".SnoozeReceiver"/>
-        <receiver android:name=".IncrementReceiver"/>
-        <receiver android:name=".DecrementReceiver"/>
-        <receiver android:name=".CloseServiceReceiver"/>
+        <receiver android:name=".receivers.StartNowReceiver" />
+        <receiver android:name=".receivers.SnoozeReceiver" />
+        <receiver android:name=".receivers.IncrementReceiver" />
+        <receiver android:name=".receivers.DecrementReceiver" />
+        <receiver android:name=".receivers.CloseServiceReceiver" />
+        <receiver android:name=".receivers.ScreenshotReceiver" />
     </application>
 
 </manifest>

@@ -10,7 +10,7 @@ import android.widget.RemoteViews;
 
 public class NotificationHelper {
     static String CHANNEL_ID = "ProxivityNotificationChannel";
-    static RemoteViews notificationLayout;
+    public static RemoteViews notificationLayout;
 
     public static NotificationCompat.Builder build(Context context) {
         notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
