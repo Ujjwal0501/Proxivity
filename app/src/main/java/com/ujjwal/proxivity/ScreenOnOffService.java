@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Timer;
 
 public class ScreenOnOffService extends Service {
 
@@ -37,6 +38,7 @@ public class ScreenOnOffService extends Service {
     public static SensorEventListener proximitySensorListener;
     public static boolean state = false;
     public static int seconds = 30;
+    public static Timer timer = null;
     static NotificationManagerCompat notificationManagerCompat;
     NotificationCompat.Builder builder;
     Display display;

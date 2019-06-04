@@ -28,9 +28,11 @@ public class SnoozeReceiver extends BroadcastReceiver {
             }
         };
 
-        Timer timer = new Timer("ProxivityTimer");
+        if (ScreenOnOffService.timer != null) ScreenOnOffService.timer.cancel();
+        if (ScreenOnOffService.timer == null) Toast.makeText(context, "timer is null after cancel", Toast.LENGTH_SHORT).show();
+        ScreenOnOffService.timer = new Timer("ProxivityTimer");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.SECOND, ScreenOnOffService.seconds);
-        timer.schedule(timerTask, cal.getTime());
+        ScreenOnOffService.timer.schedule(timerTask, cal.getTime());
     }
 }
