@@ -1,10 +1,13 @@
-package com.ujjwal.proxivity;
+package com.ujjwal.proxivity.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.widget.Toast;
+
+import com.ujjwal.proxivity.R;
+import com.ujjwal.proxivity.ScreenOnOffService;
 
 public class BootReceiver extends BroadcastReceiver {
 

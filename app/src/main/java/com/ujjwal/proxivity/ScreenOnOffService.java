@@ -21,6 +21,13 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.ujjwal.proxivity.receivers.CloseServiceReceiver;
+import com.ujjwal.proxivity.receivers.DecrementReceiver;
+import com.ujjwal.proxivity.receivers.IncrementReceiver;
+import com.ujjwal.proxivity.receivers.ScreenOffAdminReceiver;
+import com.ujjwal.proxivity.receivers.SnoozeReceiver;
+import com.ujjwal.proxivity.receivers.StartNowReceiver;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -39,7 +46,7 @@ public class ScreenOnOffService extends Service {
     public static boolean state = false;
     public static int seconds = 30;
     public static Timer timer = null;
-    static NotificationManagerCompat notificationManagerCompat;
+    public static NotificationManagerCompat notificationManagerCompat;
     NotificationCompat.Builder builder;
     Display display;
     PowerManager pm;

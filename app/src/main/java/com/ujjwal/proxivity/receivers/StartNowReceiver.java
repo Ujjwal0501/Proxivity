@@ -1,10 +1,12 @@
-package com.ujjwal.proxivity;
+package com.ujjwal.proxivity.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.widget.Toast;
+
+import com.ujjwal.proxivity.ScreenOnOffService;
 
 public class StartNowReceiver extends BroadcastReceiver {
 
