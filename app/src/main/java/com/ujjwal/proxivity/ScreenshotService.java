@@ -47,8 +47,8 @@ public class ScreenshotService extends ScreenOnOffService {
         mProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         FILE_LOCATION = getExternalFilesDir(null).toString();
         super.onCreate();
-        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
-        builder.setContentIntent(PendingIntent.getBroadcast(this, 0, new Intent(this, PermissionCheckReceiver.class), 0));
+//        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
+//        builder.setContentIntent(PendingIntent.getBroadcast(this, 0, new Intent(this, PermissionCheckReceiver.class), 0));
     }
 
     @Override

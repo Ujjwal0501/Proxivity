@@ -1,46 +1,22 @@
 package com.ujjwal.proxivity;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.hardware.display.DisplayManager;
-import android.media.Image;
-import android.media.ImageReader;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
-import android.os.Build;
-import android.os.Environment;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ujjwal.proxivity.receivers.ScreenOffAdminReceiver;
-import com.ujjwal.proxivity.receivers.ScreenshotReceiver;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,15 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView1;
     private Button run;
     private Button stop;
-    private Intent serviceIntent;
     private final int REQUEST_CODE = 1;
-    private Button take;
-    MediaProjection mProjection;
-    Display display;
-    ImageView imageView;
-    int mWidth, mHeight, mDensity, flags;
-    final Handler handler = new Handler();
-    ImageReader imageReader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +37,6 @@ public class MainActivity extends AppCompatActivity {
         textView1 = (TextView) findViewById(R.id.result1);
         run = (Button) findViewById(R.id.run);
         stop = (Button) findViewById(R.id.stop);
-        serviceIntent = new Intent(getApplicationContext(), ScreenshotReceiver.class);
-        display = getWindowManager().getDefaultDisplay();
-        take = findViewById(R.id.take);
-        imageView = findViewById(R.id.project);
 
         if (proximitySensor == null) {
             Toast.makeText(this, "Proximity sensor unavailable.", Toast.LENGTH_SHORT).show();
@@ -125,20 +89,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         run.performClick();
-
-        take.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageView.setImageBitmap(null);
-                Log.d("Snap", "Buttong clicked");
-
-                MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                Log.d("Snap", "ask permission");
-                startActivityForResult(projectionManager.createScreenCaptureIntent(), 55555);
-            }
-        });
-
-
     }
 
     @Override
@@ -161,18 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 run();
                 run.setEnabled(false);
                 stop.setEnabled(true);
-            } else if (requestCode == 55555 && resultCode == RESULT_OK && Build.VERSION.SDK_INT > 20) {
-                Log.d("Snap", "permission granted");
-                MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                Log.i("Snap", "action: "+data.getAction()+"-datastring"+data.getDataString()+"-package"+data.getPackage()+"-component"+data.getComponent()+"-class"+data.getClass());
-                mProjection = projectionManager.getMediaProjection(resultCode, data);
-                Log.d("Snap", "MediaProjection obtained");
-                try {
-                    Thread.sleep(90);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                createImageReader();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,83 +141,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
-    }
-
-    @TargetApi(21)
-    private void createImageReader() {
-
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        final DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-        Point size = new Point();
-        display.getRealSize(size);
-        mWidth = size.x;
-        mHeight = size.y;
-        mDensity = metrics.densityDpi;
-
-        final ImageReader mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
-
-        flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
-        mProjection.createVirtualDisplay("screen-mirror", mWidth, mHeight, mDensity, flags, mImageReader.getSurface(), null, handler);
-        Log.d("Snap", "Virtual display created");
-
-        mProjection.stop();
-        Log.d("Snap", "projection stopped");
-//        if (Build.VERSION.SDK_INT < 19) return;
-        mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
-            @Override
-            public void onImageAvailable(ImageReader reader) {
-                Log.d("Snap", "Image available now");
-                reader.setOnImageAvailableListener(null, handler);
-
-                Image image = reader.acquireLatestImage();
-                Log.d("Snap", "Got the image");
-
-                final Image.Plane[] planes = image.getPlanes();
-                final ByteBuffer buffer = planes[0].getBuffer();
-
-                int pixelStride = planes[0].getPixelStride();
-                int rowStride = planes[0].getRowStride();
-                int rowPadding = rowStride - pixelStride * metrics.widthPixels;
-                // create bitmap
-                Bitmap bmp = Bitmap.createBitmap(metrics.widthPixels + (int) ((float) rowPadding / (float) pixelStride), metrics.heightPixels, Bitmap.Config.ARGB_8888);
-                bmp.copyPixelsFromBuffer(buffer);
-
-                // save image to file
-                saveImage(bmp);
-
-                image.close();
-                reader.close();
-                Log.d("Snap", "Bitmap created");
-
-                Bitmap realSizeBitmap = Bitmap.createBitmap(bmp, 0, 0, metrics.widthPixels, bmp.getHeight());
-                bmp.recycle();
-
-                /* do something with [realSizeBitmap] */
-                Log.d("Snap", "Showing screenshot");
-                imageView.setImageBitmap(realSizeBitmap);
-                saveImage(realSizeBitmap);
-
-
-            }
-        }, handler);
-        Log.d("Snap", "New image listener attached");
-
-//        return mImageReader;
-    }
-
-    private void saveImage(Bitmap bmp) {
-        File file = new File(getExternalFilesDir(null), System.currentTimeMillis()+".png");
-        try {
-            file.createNewFile();
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-            fileOutputStream.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
 

@@ -3,13 +3,22 @@ package com.ujjwal.proxivity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import com.ujjwal.proxivity.receivers.CloseServiceReceiver;
+import com.ujjwal.proxivity.receivers.DecrementReceiver;
+import com.ujjwal.proxivity.receivers.IncrementReceiver;
+import com.ujjwal.proxivity.receivers.PermissionCheckReceiver;
+import com.ujjwal.proxivity.receivers.SnoozeReceiver;
+import com.ujjwal.proxivity.receivers.StartNowReceiver;
+
 public class NotificationHelper {
-    static String CHANNEL_ID = "ProxivityNotificationChannel";
+    private static String CHANNEL_ID = "ProxivityNotificationChannel";
     public static RemoteViews notificationLayout;
 
     public static NotificationCompat.Builder build(Context context) {
@@ -42,11 +51,27 @@ public class NotificationHelper {
                 .setContentTitle("Proxivity")
                 .setContentText("Control the background service.")
                 .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(notificationLayout)
                 .setOngoing(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
         if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
         return builder;
+    }
+
+    public static void addAction(Context context) {
+
+        // add functionality to the notification buttons
+        notificationLayout.setOnClickPendingIntent(R.id.start,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, StartNowReceiver.class), 0));
+        notificationLayout.setOnClickPendingIntent(R.id.snooze,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, SnoozeReceiver.class), 0));
+        notificationLayout.setOnClickPendingIntent(R.id.inc,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, IncrementReceiver.class), 0));
+        notificationLayout.setOnClickPendingIntent(R.id.dec,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, DecrementReceiver.class), 0));
+        notificationLayout.setOnClickPendingIntent(R.id.exit,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, CloseServiceReceiver.class), 0));
+        notificationLayout.setOnClickPendingIntent(R.id.shoot,
+                PendingIntent.getBroadcast(context, 0, new Intent(context, PermissionCheckReceiver.class), 0));
     }
 }

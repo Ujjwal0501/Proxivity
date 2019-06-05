@@ -12,8 +12,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
-import java.io.IOException;
-
 import static com.ujjwal.proxivity.ScreenshotService.metrics;
 
 public class PermissionActivity extends AppCompatActivity {
@@ -27,12 +25,6 @@ public class PermissionActivity extends AppCompatActivity {
         Log.d("Snap", "ask permission");
         startActivityForResult(projectionManager.createScreenCaptureIntent(), 55555);
 
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            runtime.exec("input keyevent 3");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -52,7 +44,8 @@ public class PermissionActivity extends AppCompatActivity {
             ScreenshotService.mHeight = size.y;
             ScreenshotService.mDensity = metrics.densityDpi;
             ScreenshotService.flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
-            ScreenshotService.capture();
         }
+
+        this.finish();
     }
 }

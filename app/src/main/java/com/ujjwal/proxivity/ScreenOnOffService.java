@@ -161,7 +161,7 @@ public class ScreenOnOffService extends Service {
         state = true;
         this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
 
-        addAction(this);
+        NotificationHelper.addAction(this);
         startForeground(1155555, builder.build());
         return START_STICKY;
 //        return S
@@ -205,20 +205,5 @@ public class ScreenOnOffService extends Service {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    public static void addAction(Context context) {
-
-        // add functionality to the notification buttons
-        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.start,
-                PendingIntent.getBroadcast(context, 0, new Intent(context, StartNowReceiver.class), 0));
-        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.snooze,
-                PendingIntent.getBroadcast(context, 0, new Intent(context, SnoozeReceiver.class), 0));
-        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.inc,
-                PendingIntent.getBroadcast(context, 0, new Intent(context, IncrementReceiver.class), 0));
-        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.dec,
-                PendingIntent.getBroadcast(context, 0, new Intent(context, DecrementReceiver.class), 0));
-        NotificationHelper.notificationLayout.setOnClickPendingIntent(R.id.exit,
-                PendingIntent.getBroadcast(context, 0, new Intent(context, CloseServiceReceiver.class), 0));
     }
 }

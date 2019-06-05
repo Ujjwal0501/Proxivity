@@ -76,13 +76,12 @@
             </intent-filter>
         </receiver>
 
-        <!-- 5 receivers for the notification actions-->
+        <!-- receivers for the notification actions-->
         <receiver android:name=".receivers.StartNowReceiver" />
         <receiver android:name=".receivers.SnoozeReceiver" />
         <receiver android:name=".receivers.IncrementReceiver" />
         <receiver android:name=".receivers.DecrementReceiver" />
         <receiver android:name=".receivers.CloseServiceReceiver" />
-        <receiver android:name=".receivers.ScreenshotReceiver" />
         <receiver android:name=".receivers.PermissionCheckReceiver" />
     </application>
 

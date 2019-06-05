@@ -15,7 +15,7 @@ public class DecrementReceiver extends BroadcastReceiver {
         if (ScreenOnOffService.seconds > 30) ScreenOnOffService.seconds -= 30;
 //        Toast.makeText(context, "The time is: "+ScreenOnOffService.seconds, Toast.LENGTH_SHORT).show();
         NotificationHelper.notificationLayout.setCharSequence(R.id.snooze, "setText", ScreenOnOffService.seconds+" seconds");
-        ScreenOnOffService.addAction(context);
+        NotificationHelper.addAction(context);
         ScreenOnOffService.notificationManagerCompat.notify(1155555, NotificationHelper.init(context).build());
     }
 }
