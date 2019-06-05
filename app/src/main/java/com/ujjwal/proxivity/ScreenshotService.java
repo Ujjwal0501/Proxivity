@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.widget.Toast;
 
 import com.ujjwal.proxivity.receivers.PermissionCheckReceiver;
 
@@ -46,6 +47,7 @@ public class ScreenshotService extends ScreenOnOffService {
         mProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         FILE_LOCATION = getExternalFilesDir(null).toString();
         super.onCreate();
+        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
         builder.setContentIntent(PendingIntent.getBroadcast(this, 0, new Intent(this, PermissionCheckReceiver.class), 0));
     }
 

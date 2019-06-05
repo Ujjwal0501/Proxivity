@@ -110,11 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
                     run.setEnabled(false);
                     stop.setEnabled(true);
-
-                    // get permission to capture screen
-//                    MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-//                    Log.d("Snap", "ask permission");
-//                    startActivityForResult(projectionManager.createScreenCaptureIntent(), 55555);
                 }
             }
         });
@@ -135,23 +130,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageView.setImageBitmap(null);
-//                Snackbar.make(v, "taking screenshot...", Snackbar.LENGTH_SHORT).show();
                 Log.d("Snap", "Buttong clicked");
 
                 MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                 Log.d("Snap", "ask permission");
-                startActivityForResult(projectionManager.createScreenCaptureIntent(), 5555);
-//                mProjection = projectionManager.getMediaProjection(RESULT_OK, new Intent());
-//                createImageReader();
-
-//                new Runnable() {
-//                    @Override@TargetApi(21)
-//                    public void run() {
-//                        MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-//                        Log.d("Snap", "ask permission");
-//                        startActivityForResult(projectionManager.createScreenCaptureIntent(), 55555);
-//                    }
-//                };
+                startActivityForResult(projectionManager.createScreenCaptureIntent(), 55555);
             }
         });
 
@@ -175,51 +158,10 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == REQUEST_CODE && resultCode == RESULT_CANCELED)
                 Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
             else if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-//                run();
-//                run.setEnabled(false);
-//                stop.setEnabled(true);
-
-                // get permission to capture screen
-                MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                Log.d("Snap", "ask permission");
-                startActivityForResult(projectionManager.createScreenCaptureIntent(), 55555);
-            } else if (requestCode == 55555 && resultCode == RESULT_OK && Build.VERSION.SDK_INT > 20) {
-                // enable shoot button
-                ((Button) ((LinearLayout) stop.getParent()).getChildAt(((LinearLayout) stop.getParent()).indexOfChild(stop)+1)).setEnabled(true);
-
-//                Log.d("Snap", "permission granted");
-//                MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-//                Log.i("Snap", "action: "+data.getAction()+"-datastring"+data.getDataString()+"-package"+data.getPackage()+"-component"+data.getComponent()+"-class"+data.getClass());
-//                mProjection = projectionManager.getMediaProjection(resultCode, data);
-//                Log.d("Snap", "MediaProjection obtained");
-
-                run.setEnabled(false);
-                stop.setEnabled(true);
-
-                if (!isMyServiceRunning(ScreenshotService.class)) {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            startService(new Intent(getApplicationContext(), ScreenshotService.class).putExtra("data", data));
-                        }
-                    }.start();
-                    Snackbar.make(textView1, "Service started successfully.", Snackbar.LENGTH_SHORT).show();
-
-                    // clone the data to use it in the service
-//                    MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-//                    ScreenshotService.mProjection = projectionManager.getMediaProjection(resultCode, data);
-//                    ScreenshotService.data = (Intent) data.clone();
-
-                    this.finish();
-                } else {
-                    Snackbar.make(textView1, "Service already running.", Snackbar.LENGTH_SHORT).show();
-                }
-
-            } else if (requestCode == 55555 && resultCode != RESULT_OK) {
                 run();
                 run.setEnabled(false);
                 stop.setEnabled(true);
-            } else if (requestCode == 5555 && resultCode == RESULT_OK && Build.VERSION.SDK_INT > 20) {
+            } else if (requestCode == 55555 && resultCode == RESULT_OK && Build.VERSION.SDK_INT > 20) {
                 Log.d("Snap", "permission granted");
                 MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                 Log.i("Snap", "action: "+data.getAction()+"-datastring"+data.getDataString()+"-package"+data.getPackage()+"-component"+data.getComponent()+"-class"+data.getClass());
@@ -240,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     private void run() {
 //        if (is)
         System.out.println(Thread.currentThread().getId());
-        if (!isMyServiceRunning(ScreenOnOffService.class)) {
+        if (!isMyServiceRunning(ScreenshotService.class)) {
             new Thread() {
                 @Override
                 public void run() {
@@ -325,16 +267,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Snap", "New image listener attached");
 
 //        return mImageReader;
-    }
-
-    @TargetApi(21)
-    public void takeNow(View v){
-        mProjection.createVirtualDisplay("screen-mirror", mWidth, mHeight, mDensity, flags, imageReader.getSurface(), null, handler);
-        Log.d("Snap", "Virtual display created");
-
-        mProjection.stop();
-        Log.d("Snap", "projection stopped");
-        v.setEnabled(false);
     }
 
     private void saveImage(Bitmap bmp) {

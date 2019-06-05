@@ -10,13 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 
-import com.ujjwal.proxivity.ScreenshotService;
-
 import java.io.IOException;
-import java.security.Key;
 
 import static com.ujjwal.proxivity.ScreenshotService.metrics;
 
@@ -45,7 +41,6 @@ public class PermissionActivity extends AppCompatActivity {
         if (requestCode == 55555 && resultCode == RESULT_OK) {
 
             // get permission to capture screen
-            MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             ScreenshotService.data = (Intent) data.clone();
             WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
             ScreenshotService.display = wm.getDefaultDisplay();
@@ -58,7 +53,6 @@ public class PermissionActivity extends AppCompatActivity {
             ScreenshotService.mDensity = metrics.densityDpi;
             ScreenshotService.flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
             ScreenshotService.capture();
-            this.moveTaskToBack(true);
         }
     }
 }
