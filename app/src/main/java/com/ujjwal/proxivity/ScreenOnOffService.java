@@ -1,6 +1,5 @@
 package com.ujjwal.proxivity;
 
-import android.app.PendingIntent;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -19,14 +18,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.ujjwal.proxivity.receivers.CloseServiceReceiver;
-import com.ujjwal.proxivity.receivers.DecrementReceiver;
-import com.ujjwal.proxivity.receivers.IncrementReceiver;
 import com.ujjwal.proxivity.receivers.ScreenOffAdminReceiver;
-import com.ujjwal.proxivity.receivers.SnoozeReceiver;
-import com.ujjwal.proxivity.receivers.StartNowReceiver;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,7 +30,7 @@ import java.util.Timer;
 
 public class ScreenOnOffService extends Service {
 
-    private final String TAG = "Testing";
+    private final String TAG = "CHECK";
     public static SensorManager sensorManager;
     public static Sensor proximitySensor;
     public static Sensor accelerometerSensor;
@@ -48,7 +41,7 @@ public class ScreenOnOffService extends Service {
     public static Timer timer = null;
     public static NotificationManagerCompat notificationManagerCompat;
     NotificationCompat.Builder builder;
-    Display display;
+    static Display display;
     PowerManager pm;
     PowerManager.WakeLock wl;
     int pflag = 0;
@@ -72,7 +65,8 @@ public class ScreenOnOffService extends Service {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        if (display == null) display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        if (display == null) Log.e(TAG, "display is still null");
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
         NotificationHelper.createNotificationChannel(this);
@@ -81,11 +75,13 @@ public class ScreenOnOffService extends Service {
 //        notificationManagerCompat.notify(155555, builder.build());
 
         if (proximitySensor == null) {
-            Toast.makeText(this, "Proximity sensor unavailable.", Toast.LENGTH_SHORT).show();
+            Log.e("Error", "Proximity sensor unavailable.");
+//            Toast.makeText(this, "Proximity sensor unavailable.", Toast.LENGTH_SHORT).show();
             stopSelf();
         }
         if (accelerometerSensor == null) {
-            Toast.makeText(this, "Accelerometer unavailable.", Toast.LENGTH_SHORT).show();
+            Log.e("Error", "Acceleromtere unavailable.");
+//            Toast.makeText(this, "Accelerometer unavailable.", Toast.LENGTH_SHORT).show();
             stopSelf();
         }
 

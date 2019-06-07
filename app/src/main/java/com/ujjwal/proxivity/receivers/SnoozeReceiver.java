@@ -20,6 +20,7 @@ public class SnoozeReceiver extends BroadcastReceiver {
         Toast.makeText(context, "Service snoozed for "+ ScreenOnOffService.seconds + " seconds.", Toast.LENGTH_SHORT).show();
         ScreenOnOffService.sensorManager.unregisterListener(ScreenOnOffService.proximitySensorListener, ScreenOnOffService.proximitySensor);
         ScreenOnOffService.sensorManager.unregisterListener(ScreenOnOffService.accelerometerSensorListener, ScreenOnOffService.accelerometerSensor);
+        ScreenOnOffService.state = false;
 
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -27,11 +28,12 @@ public class SnoozeReceiver extends BroadcastReceiver {
                 Log.d("Proxivity", "Back on track.");
                 ScreenOnOffService.sensorManager.registerListener(ScreenOnOffService.proximitySensorListener, ScreenOnOffService.proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
                 ScreenOnOffService.sensorManager.registerListener(ScreenOnOffService.accelerometerSensorListener, ScreenOnOffService.accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                ScreenOnOffService.state = true;
             }
         };
 
         if (ScreenOnOffService.timer != null) ScreenOnOffService.timer.cancel();
-        if (ScreenOnOffService.timer == null) Toast.makeText(context, "timer is null after cancel", Toast.LENGTH_SHORT).show();
+
         ScreenOnOffService.timer = new Timer("ProxivityTimer");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.SECOND, ScreenOnOffService.seconds);

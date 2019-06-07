@@ -2,17 +2,11 @@ package com.ujjwal.proxivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
-import android.hardware.display.DisplayManager;
 import android.media.projection.MediaProjectionManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.WindowManager;
-
-import static com.ujjwal.proxivity.ScreenshotService.metrics;
 
 public class PermissionActivity extends AppCompatActivity {
 
@@ -34,16 +28,6 @@ public class PermissionActivity extends AppCompatActivity {
 
             // get permission to capture screen
             ScreenshotService.data = (Intent) data.clone();
-            WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-            ScreenshotService.display = wm.getDefaultDisplay();
-            metrics = new DisplayMetrics();
-            ScreenshotService.display.getMetrics(metrics);
-            Point size = new Point();
-            ScreenshotService.display.getRealSize(size);
-            ScreenshotService.mWidth = size.x;
-            ScreenshotService.mHeight = size.y;
-            ScreenshotService.mDensity = metrics.densityDpi;
-            ScreenshotService.flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
         }
 
         this.finish();
