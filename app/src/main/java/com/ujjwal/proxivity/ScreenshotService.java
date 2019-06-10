@@ -11,6 +11,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -24,7 +25,7 @@ import java.nio.ByteBuffer;
 
 public class ScreenshotService extends ScreenOnOffService {
 
-    public static int mWidth, mHeight, mDensity, flags;
+    public static int mWidth, mHeight, mDensity, flags, SS_NOTIF_ID = 255555;
     public static DisplayMetrics metrics;
     public static final Handler handler = new Handler();
     public static MediaProjection mProjection = null;
@@ -41,7 +42,7 @@ public class ScreenshotService extends ScreenOnOffService {
     @Override
     public void onCreate() {
         mProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
-        FILE_LOCATION = getExternalFilesDir(null).toString();
+        FILE_LOCATION = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         super.onCreate();
 
         Point size = new Point();
@@ -57,7 +58,13 @@ public class ScreenshotService extends ScreenOnOffService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        Log.d("TEST", " In onStartCommand");
+        state = true;
+        this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
+
+        NotificationHelper.addAction(this);
+        startForeground(SS_NOTIF_ID, builder.build());
+        return START_STICKY;
     }
 
     @Override
@@ -124,7 +131,7 @@ public class ScreenshotService extends ScreenOnOffService {
     }
 
     private static void saveImage(Bitmap bmp) {
-        File file = new File(FILE_LOCATION, System.currentTimeMillis()+".jpeg");
+        File file = new File(FILE_LOCATION, "/Screenshots/"+System.currentTimeMillis()+".jpg");
         try {
             file.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(file);

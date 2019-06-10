@@ -44,7 +44,7 @@ public class ScreenOnOffService extends Service {
     static Display display;
     PowerManager pm;
     PowerManager.WakeLock wl;
-    int pflag = 0;
+    int pflag = 0, ON_OFF_NOTIF_ID = 155555;
 
     class MyServiceBinder extends Binder {
         public ScreenOnOffService getService() {
@@ -158,7 +158,7 @@ public class ScreenOnOffService extends Service {
         this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
 
         NotificationHelper.addAction(this);
-        startForeground(1155555, builder.build());
+        startForeground(ON_OFF_NOTIF_ID, builder.build());
         return START_STICKY;
 //        return S
     }
