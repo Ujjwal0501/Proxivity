@@ -1,74 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:padding="0dp"
-    android:layout_marginTop="4dp">
-
-    <ImageButton
-        android:id="@+id/shoot"
-        style="@style/Widget.AppCompat.ActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/shoot" />
-
-    <Button
-        android:id="@+id/start"
-        style="@style/Widget.AppCompat.ActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@drawable/run"
-        android:lineSpacingExtra="0dp"
-        android:padding="0dp"
-        android:text="start service"
-        android:textColor="#2894FF"
-        android:textSize="10sp" />
-
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="0dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
         <ImageButton
-            android:id="@+id/dec"
+            android:id="@+id/shoot"
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="-8dp"
-            android:layout_marginRight="-8dp"
-            android:src="@drawable/dec30" />
+            android:src="@drawable/shoot" />
 
         <Button
-            android:id="@+id/snooze"
+            android:id="@+id/start"
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/snooze"
+            android:drawableTop="@drawable/run"
+            android:drawablePadding="4dp"
             android:lineSpacingExtra="0dp"
-            android:padding="0dp"
-            android:text="30 seconds"
+            android:text="start service"
             android:textColor="#2894FF"
             android:textSize="10sp" />
 
-        <ImageButton
-            android:id="@+id/inc"
-            style="@style/Widget.AppCompat.ActionButton"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="-8dp"
-            android:layout_marginLeft="-8dp"
-            android:src="@drawable/inc30" />
+            android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/exit"
-            style="@style/Widget.AppCompat.ActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/close" />
+            <ImageButton
+                android:id="@+id/dec"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-8dp"
+                android:layout_marginRight="-8dp"
+                android:src="@drawable/dec30" />
 
+            <Button
+                android:id="@+id/snooze"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/snooze"
+                android:drawablePadding="4dp"
+                android:lineSpacingExtra="0dp"
+                android:padding="0dp"
+                android:text="30 seconds"
+                android:textColor="#2894FF"
+                android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/inc"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-8dp"
+                android:layout_marginLeft="-8dp"
+                android:src="@drawable/inc30" />
+
+            <ImageButton
+                android:id="@+id/exit"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/close" />
+        </LinearLayout>
 
     </LinearLayout>
-
 </LinearLayout>

@@ -2,6 +2,9 @@ package com.ujjwal.proxivity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -11,10 +14,13 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -32,6 +38,7 @@ public class ScreenshotService extends ScreenOnOffService {
     public static Intent data = null;
     public static String FILE_LOCATION;
     static MediaProjectionManager mProjectionManager;
+    static Context context;
 
     @Nullable
     @Override
@@ -44,6 +51,7 @@ public class ScreenshotService extends ScreenOnOffService {
         mProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         FILE_LOCATION = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         super.onCreate();
+        context = this;
 
         Point size = new Point();
         display.getRealSize(size);
@@ -137,6 +145,24 @@ public class ScreenshotService extends ScreenOnOffService {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
             fileOutputStream.close();
+
+            // show notification after saving file
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ProxivityNotificationChannel")
+                    .setAutoCancel(true)
+                    .setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigLargeIcon(bmp)
+                    .bigPicture(bmp)
+                    .setBigContentTitle(file.getPath()))
+                    .setSmallIcon(R.drawable.ic_launcher_background)
+                    .setPriority(NotificationCompat.PRIORITY_MIN)
+                    .setContentIntent(PendingIntent.getService(context, 0, new Intent(context, ScreenshotService.class), 0));
+
+//        if (Build.VERSION.SDK_INT >= 21 ) builder.addInvisibleAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
+//        else builder.addAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
+            notificationManagerCompat.notify(355555, builder.build());
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -18,8 +18,8 @@ import com.ujjwal.proxivity.receivers.SnoozeReceiver;
 import com.ujjwal.proxivity.receivers.StartNowReceiver;
 
 public class NotificationHelper {
-    private static String CHANNEL_ID = "ProxivityNotificationChannel";
     public static RemoteViews notificationLayout;
+    private static String CHANNEL_ID = "ProxivityNotificationChannel";
 
     public static NotificationCompat.Builder build(Context context) {
         notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
@@ -53,7 +53,8 @@ public class NotificationHelper {
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCustomContentView(notificationLayout)
                 .setOngoing(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            builder.setVisibility(Notification.VISIBILITY_PUBLIC);
         if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
         return builder;
     }
