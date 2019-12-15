@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
@@ -23,6 +24,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,18 +86,23 @@ public class ScreenshotService extends ScreenOnOffService {
     public static void capture() {
 
         try {
-            final ImageReader mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
+            final ImageReader mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 1);
 
             mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
+
                     Log.d("Snap", "Image available now");
                     reader.setOnImageAvailableListener(null, handler);
+
+                    mProjection.stop();
+                    Log.d("Snap", "projection stopped");
 
                     Image image = reader.acquireLatestImage();
                     Log.d("Snap", "Got the image");
 
                     final Image.Plane[] planes = image.getPlanes();
+                    Log.d("Snap", "onImageAvailable: "+planes.length);
                     final ByteBuffer buffer = planes[0].getBuffer();
 
 //                    int pixelStride = planes[0].getPixelStride();
@@ -119,17 +126,28 @@ public class ScreenshotService extends ScreenOnOffService {
                     /* do something with [realSizeBitmap] */
 
                 }
-            }, handler);
+
+            }, new Handler());
+
             Log.d("Snap", "New image listener attached");
 
             System.out.println("capturing");
+
             mProjection = mProjectionManager.getMediaProjection(Activity.RESULT_OK, data);
 
-            mProjection.createVirtualDisplay("proxivity", mWidth, mHeight, mDensity, flags, mImageReader.getSurface(), null, handler);
+            final VirtualDisplay virtualDisplay = mProjection.createVirtualDisplay("proxivity", mWidth, mHeight, mDensity, flags, mImageReader.getSurface(), null, new Handler());
             Log.d("Snap", "Virtual display created");
 
-            mProjection.stop();
-            Log.d("Snap", "projection stopped");
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mProjection.stop();
+//                    Log.d("Snap", "projection stopped");
+//                }
+//            }, 100);
+
+//             mProjection.stop();
+//             Log.d("Snap", "projection stopped");
 
 //        return mImageReader;
         } catch (Exception e) {
