@@ -33,7 +33,7 @@ public class NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.channel_name);
             String description = context.getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_NONE;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
 
@@ -52,6 +52,7 @@ public class NotificationHelper {
                 .setContentText("Control the background service.")
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCustomContentView(notificationLayout)
+                .setSound(null)
                 .setOngoing(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             builder.setVisibility(Notification.VISIBILITY_PUBLIC);
