@@ -38,7 +38,7 @@ public class ScreenshotService extends ScreenOnOffService {
     public static final Handler handler = new Handler();
     public static MediaProjection mProjection = null;
     public static Intent data = null;
-    public static String FILE_LOCATION;
+    public static File FILE_LOCATION;
     static MediaProjectionManager mProjectionManager;
     static Context context;
 
@@ -51,7 +51,7 @@ public class ScreenshotService extends ScreenOnOffService {
     @Override
     public void onCreate() {
         mProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
-        FILE_LOCATION = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+        FILE_LOCATION = new File(Environment.getExternalStorageDirectory(), "Pictures/Screenshots/");;
         super.onCreate();
         context = this;
 
@@ -157,7 +157,7 @@ public class ScreenshotService extends ScreenOnOffService {
     }
 
     private static void saveImage(Bitmap bmp) {
-        File file = new File(FILE_LOCATION, "/Screenshots/"+System.currentTimeMillis()+".jpg");
+        File file = new File(FILE_LOCATION, System.currentTimeMillis()+".jpg");
         try {
             file.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
