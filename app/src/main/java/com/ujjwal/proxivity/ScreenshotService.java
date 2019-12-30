@@ -15,6 +15,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -174,12 +175,11 @@ public class ScreenshotService extends ScreenOnOffService {
                     .setBigContentTitle(file.getPath()))
                     .setSmallIcon(R.drawable.ic_launcher_background)
                     .setPriority(NotificationCompat.PRIORITY_MIN)
-                    .setContentIntent(PendingIntent.getService(context, 0, new Intent(context, ScreenshotService.class), 0));
+                    .setContentIntent(PendingIntent.getActivity(context, 0,
+                            new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file), "image/*"), 0));
 
 //        if (Build.VERSION.SDK_INT >= 21 ) builder.addInvisibleAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
 //        else builder.addAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) builder.setVisibility(Notification.VISIBILITY_PUBLIC);
-            if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
             notificationManagerCompat.notify(355555, builder.build());
 
         } catch (IOException e) {
