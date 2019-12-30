@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
@@ -20,9 +21,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
@@ -170,13 +173,18 @@ public class ScreenshotService extends ScreenOnOffService {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ProxivityNotificationChannel")
                     .setAutoCancel(true)
                     .setStyle(new NotificationCompat.BigPictureStyle()
-                    .bigLargeIcon(bmp)
-                    .bigPicture(bmp)
-                    .setBigContentTitle(file.getPath()))
+                        .bigLargeIcon(bmp)
+                        .bigPicture(bmp)
+                        .setBigContentTitle(file.getName()))
+                    .setContentTitle(file.getName())
+                    .setLargeIcon(BitmapFactory.decodeFile(file.getPath()))
                     .setSmallIcon(R.drawable.ic_launcher_background)
                     .setPriority(NotificationCompat.PRIORITY_MIN)
                     .setContentIntent(PendingIntent.getActivity(context, 0,
-                            new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file), "image/*"), 0));
+                            new Intent(Intent.ACTION_VIEW)
+                                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                                .setDataAndType(FileProvider.getUriForFile(context, "com.ujjwal.proxivity.fileprovider", file),
+                            "image/*"), 0));
 
 //        if (Build.VERSION.SDK_INT >= 21 ) builder.addInvisibleAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
 //        else builder.addAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
