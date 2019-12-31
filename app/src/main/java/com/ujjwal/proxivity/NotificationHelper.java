@@ -19,7 +19,6 @@ import com.ujjwal.proxivity.receivers.StartNowReceiver;
 
 public class NotificationHelper {
     public static RemoteViews notificationLayout;
-    private static String CHANNEL_ID = "ProxivityNotificationChannel";
 
     public static NotificationCompat.Builder build(Context context) {
         notificationLayout = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
@@ -66,7 +65,7 @@ public class NotificationHelper {
 
     public static NotificationCompat.Builder init(Context context) {
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getResources().getString(R.string.main_channel_id))
                 .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle("Proxivity")
                 .setContentText("Control the background service.")
@@ -74,9 +73,6 @@ public class NotificationHelper {
                 .setCustomContentView(notificationLayout)
                 .setSound(null)
                 .setOngoing(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            builder.setVisibility(Notification.VISIBILITY_PUBLIC);
-        if (Build.VERSION.SDK_INT >= 17) builder.setShowWhen(false);
         return builder;
     }
 
