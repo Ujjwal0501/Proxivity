@@ -90,6 +90,9 @@
         <receiver android:name=".receivers.DecrementReceiver" />
         <receiver android:name=".receivers.CloseServiceReceiver" />
         <receiver android:name=".receivers.PermissionCheckReceiver" />
+        <receiver android:name=".receivers.OpenFile" />
+        <receiver android:name=".receivers.DeleteFile" />
+        <receiver android:name=".receivers.ShareFile" />
 
         <!-- file provider to share content in new OS versions-->
         <provider
