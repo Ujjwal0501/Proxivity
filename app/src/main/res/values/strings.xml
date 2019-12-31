@@ -4,6 +4,10 @@
     <string name="run">Start Service</string>
     <string name="stop">Stop Service</string>
     <string name="reboot">Reboot Device</string>
-    <string name="channel_name">Channel Name</string>
-    <string name="channel_description">This is description of the channel.</string>
+    <string name="main_channel">Feature channel</string>
+    <string name="main_channel_description">This channel shows main feature related notifications.</string>
+    <string name="main_channel_id">Feature Channel</string>
+    <string name="screenshot_channel">Screenshot channel</string>
+    <string name="screenshot_channel_description">This channel shows screenshot notifications.</string>
+    <string name="screenshot_channel_id">Screenshot Channel</string>
 </resources>

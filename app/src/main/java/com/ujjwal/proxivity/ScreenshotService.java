@@ -37,7 +37,7 @@ import java.nio.ByteBuffer;
 
 public class ScreenshotService extends ScreenOnOffService {
 
-    public static int mWidth, mHeight, mDensity, flags, SS_NOTIF_ID = 255555;
+    public static int mWidth, mHeight, mDensity, flags, NOTIFICATION_ID= 25, SCREENSHOT_ID = 35;
     public static DisplayMetrics metrics;
     public static final Handler handler = new Handler();
     public static MediaProjection mProjection = null;
@@ -77,7 +77,7 @@ public class ScreenshotService extends ScreenOnOffService {
         this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
 
         NotificationHelper.addAction(this);
-        startForeground(SS_NOTIF_ID, builder.build());
+        startForeground(NOTIFICATION_ID, builder.build());
         return START_STICKY;
     }
 
@@ -168,9 +168,11 @@ public class ScreenshotService extends ScreenOnOffService {
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
             fileOutputStream.close();
 
+            NotificationHelper.createScreenshotChannel(context);
+
             // show notification after saving file
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ProxivityNotificationChannel")
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getString(R.string.screenshot_channel_id))
                     .setAutoCancel(true)
                     .setStyle(new NotificationCompat.BigPictureStyle()
                         .bigLargeIcon(bmp)
@@ -179,7 +181,7 @@ public class ScreenshotService extends ScreenOnOffService {
                     .setContentTitle(file.getName())
                     .setLargeIcon(BitmapFactory.decodeFile(file.getPath()))
                     .setSmallIcon(R.drawable.ic_launcher_background)
-                    .setPriority(NotificationCompat.PRIORITY_MIN)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(PendingIntent.getActivity(context, 0,
                             new Intent(Intent.ACTION_VIEW)
                                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
@@ -188,7 +190,7 @@ public class ScreenshotService extends ScreenOnOffService {
 
 //        if (Build.VERSION.SDK_INT >= 21 ) builder.addInvisibleAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
 //        else builder.addAction(R.drawable.ic_launcher_background, "Restart Service", PendingIntent.getService(context 0, new Intent(context, ScreenshotService.class), 0));
-            notificationManagerCompat.notify(355555, builder.build());
+            notificationManagerCompat.notify(SCREENSHOT_ID, builder.build());
 
         } catch (IOException e) {
             e.printStackTrace();

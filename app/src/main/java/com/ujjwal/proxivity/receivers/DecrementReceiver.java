@@ -17,6 +17,6 @@ public class DecrementReceiver extends BroadcastReceiver {
 //        Toast.makeText(context, "The time is: "+ScreenOnOffService.seconds, Toast.LENGTH_SHORT).show();
         NotificationHelper.notificationLayout.setCharSequence(R.id.snooze, "setText", ScreenOnOffService.seconds+" seconds");
         NotificationHelper.addAction(context);
-        ScreenOnOffService.notificationManagerCompat.notify(ScreenshotService.SS_NOTIF_ID, NotificationHelper.init(context).build());
+        ScreenOnOffService.notificationManagerCompat.notify(ScreenshotService.NOTIFICATION_ID, NotificationHelper.init(context).build());
     }
 }

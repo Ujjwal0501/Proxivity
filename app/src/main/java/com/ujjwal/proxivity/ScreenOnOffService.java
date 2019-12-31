@@ -44,7 +44,7 @@ public class ScreenOnOffService extends Service {
     static Display display;
     PowerManager pm;
     PowerManager.WakeLock wl;
-    int pflag = 0, ON_OFF_NOTIF_ID = 155555;
+    int pflag = 0, NOTIFICATION_ID = 15;
 
     class MyServiceBinder extends Binder {
         public ScreenOnOffService getService() {
@@ -69,10 +69,10 @@ public class ScreenOnOffService extends Service {
         if (display == null) Log.e(TAG, "display is still null");
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
-        NotificationHelper.createNotificationChannel(this);
+        NotificationHelper.createFeatureChannel(this);
         builder = NotificationHelper.build(this);
         notificationManagerCompat = NotificationManagerCompat.from(this);
-//        notificationManagerCompat.notify(155555, builder.build());
+//        notificationManagerCompat.notify(ScreenOnOffService.NOTIFICATION_ID, builder.build());
 
         if (proximitySensor == null) {
             Log.e("Error", "Proximity sensor unavailable.");
@@ -144,7 +144,7 @@ public class ScreenOnOffService extends Service {
         sensorManager.unregisterListener(proximitySensorListener, proximitySensor);
         sensorManager.unregisterListener(accelerometerSensorListener, accelerometerSensor);
         Log.d(TAG, " In onDestroy");
-//        notificationManagerCompat.cancel(155555);
+//        notificationManagerCompat.cancel(ScreenOnOffService.NOTIFICATION_ID);
         state = false;
         this.appendLog("Service Stopped:\n");
         super.onDestroy();
@@ -158,7 +158,7 @@ public class ScreenOnOffService extends Service {
         this.appendLog("onStart is on ThreadID: " + Thread.currentThread().getId() +"\nService Started:");
 
         NotificationHelper.addAction(this);
-        startForeground(ON_OFF_NOTIF_ID, builder.build());
+        startForeground(NOTIFICATION_ID, builder.build());
         return START_STICKY;
 //        return S
     }
