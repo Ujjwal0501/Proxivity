@@ -16,7 +16,6 @@
 
         <ImageButton
             android:id="@+id/shoot"
-            android:background="?selectableItemBackgroundBorderless"
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,7 +23,6 @@
 
         <Button
             android:id="@+id/start"
-            android:background="?selectableItemBackgroundBorderless"
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +39,6 @@
 
             <ImageButton
                 android:id="@+id/dec"
-                android:background="?selectableItemBackgroundBorderless"
                 style="@style/Widget.AppCompat.ActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,7 +48,6 @@
 
             <Button
                 android:id="@+id/snooze"
-                android:background="?selectableItemBackgroundBorderless"
                 style="@style/Widget.AppCompat.ActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,7 +61,6 @@
 
             <ImageButton
                 android:id="@+id/inc"
-                android:background="?selectableItemBackgroundBorderless"
                 style="@style/Widget.AppCompat.ActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +70,6 @@
 
             <ImageButton
                 android:id="@+id/exit"
-                android:background="?selectableItemBackgroundBorderless"
                 style="@style/Widget.AppCompat.ActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
