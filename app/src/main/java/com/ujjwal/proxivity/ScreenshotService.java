@@ -18,10 +18,11 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.FileProvider;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 
