@@ -7,11 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
-import android.widget.Toast;
-
-import java.io.File;
-import java.net.URI;
 
 public class OpenFile extends BroadcastReceiver {
     @Override

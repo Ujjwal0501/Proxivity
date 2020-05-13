@@ -5,17 +5,22 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.ujjwal.proxivity.receivers.ScreenOffAdminReceiver;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private Button run;
     private Button stop;
     private final int REQUEST_CODE = 1;
+    private final int DRAW_OVER_OTHER_APP_PERMISSION = 2;
+    private boolean SHOW_FLOATING_WIDGET = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             stop.setEnabled(false);
             run.setEnabled(true);
         }
+
+        askForSystemOverlayPermission();
 
         run.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +96,16 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(textView1, "Service is stopped.", Snackbar.LENGTH_SHORT).show();
             }
         });
+        findViewById(R.id.show_bubble).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SHOW_FLOATING_WIDGET = ((CheckBox) v).isChecked();
+                if (!SHOW_FLOATING_WIDGET)
+                    stopService(new Intent(MainActivity.this, FloatingActions.class));
+                else
+                    showFloatingActions();
+            }
+        });
 
         run.performClick();
     }
@@ -94,11 +113,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        if (!SHOW_FLOATING_WIDGET)
+            return;
+        showFloatingActions();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (isMyServiceRunning(FloatingActions.class))
+            ((CheckBox) findViewById(R.id.show_bubble)).setChecked(true);
     }
 
     @Override
@@ -141,6 +166,30 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private void askForSystemOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+
+            //If the draw over permission is not available to open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION);
+        }
+    }
+
+    private void showFloatingActions() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            startService(new Intent(MainActivity.this, FloatingActions.class));
+        } else if (Settings.canDrawOverlays(MainActivity.this)) {
+            startService(new Intent(MainActivity.this, FloatingActions.class));
+        } else {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION);
+            Toast.makeText(MainActivity.this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
+        }
     }
 }
 
