@@ -25,6 +25,7 @@ public class FloatingActions extends Service {
     private ImageView controller;
     private WindowManager mWindowManager;
     private View mOverlayView;
+    private boolean CLOSE = false;
 
     @Nullable
     @Override
@@ -82,8 +83,11 @@ public class FloatingActions extends Service {
             controller.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    stopSelf();
-                    return true;
+                    if (CLOSE) {
+                        stopSelf();
+                        return true;
+                    }
+                    return false;
                 }
             });
 
@@ -98,24 +102,26 @@ public class FloatingActions extends Service {
 
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
+                            CLOSE = true;
 
                             //remember the initial position.
                             initialX = params.x;
                             initialY = params.y;
 
-
                             //get the touch location
                             initialTouchX = event.getRawX();
                             initialTouchY = event.getRawY();
 
-
                             return false;
                         case MotionEvent.ACTION_UP:
+                            CLOSE = false;
+
                             if (Math.round(event.getRawX() - initialTouchX) < 5 || Math.round(event.getRawY() - initialTouchY) < 5)
                                 adjustVolume();
                             return true;
 
                         case MotionEvent.ACTION_MOVE:
+                            CLOSE = false;
 
                             int xDiff = Math.round(event.getRawX() - initialTouchX);
                             int yDiff = Math.round(event.getRawY() - initialTouchY);
